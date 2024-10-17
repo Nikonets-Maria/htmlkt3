@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мультимедийный Проект</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #myCanvas { border: 1px solid black; }
+    </style>
+</head>
+<body>
+
+<h2>Аудио и Видео</h2>
+<audio id="audioPlayer" controls>
+    <source src="your-audio-file.mp3" type="audio/mp3">
+    Ваш браузер не поддерживает аудио.
+</audio>
+<video id="videoPlayer" controls width="600">
+    <source src="your-video-file.mp4" type="video/mp4">
+    Ваш браузер не поддерживает видео.
+</video>
+
+<h2>Графика и Анимация</h2>
+<canvas id="myCanvas" width="500" height="500"></canvas>
+
+<h2>Работа с Изображениями</h2>
+<input type="file" id="imageUpload" accept="image/*">
+<canvas id="imageCanvas" width="500" height="500"></canvas>
+<button id="saveBtn">Сохранить изображение</button>
+
+<script>
+    // Аудио и Видео
+    const audio = document.getElementById('audioPlayer');
+    const video = document.getElementById('videoPlayer');
+
+    // Графика и Анимация
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    let x = 0;
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "blue";
+        ctx.fillRect(x, 20, 50, 50);
+        x += 1;
+        if (x > canvas.width) x = 0; // Сброс положения
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+
+    // Работа с Изображениями
+    const fileInput = document.getElementById('imageUpload');
+    const imgCanvas = document.getElementById('imageCanvas');
+    const imgCtx = imgCanvas.getContext('2d');
+
+    fileInput.onchange = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                imgCtx.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+                imgCtx.drawImage(img, 0, 0, imgCanvas.width, imgCanvas.height);
+                // Добавьте свои фильтры/обрезку здесь
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    };
+
+    // Сохранение изображения
+    document.getElementById('saveBtn').onclick = () => {
+        const link = document.createElement('a');
+        link.download = 'image.png';
+        link.href = imgCanvas.toDataURL();
+        link.click();
+    };
+</script>
+</body>
+</html>

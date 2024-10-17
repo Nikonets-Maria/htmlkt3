@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка файла</title>
+</head>
+<body>
+    <label for="foto">Выберите фото:</label>
+    <input type="file" id="fotoInput" name="fotoFile" accept="image/png, image/jpeg" multiple />
+    <canvas id="fotoCanvas" width="500" height="500"></canvas>
+    <button id="saveImg">Сохранить изображение</button>
+    
+    <script>
+        const fileInput = document.getElementById('fotoInput')
+        const imgCanvas = document.getElementById('fotoCanvas')
+        const $ = imgCanvas.getContext('2d');
+        
+        fileInput.onchange = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+                
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        $.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+                        $.drawImage(img, 0, 0, imgCanvas.width, imgCanvas.height);
+                        // Добавьте свои фильтры/обрезку
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+
+            // Сохранение изображения
+            document.getElementById('saveImg').onclick = () => {
+                const link = document.createElement('a');
+                link.download = 'image.png';
+                link.href = imgCanvas.toDataURL();
+                link.click();
+            };
+    </script>
+</body>
+</html>
